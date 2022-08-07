@@ -1,0 +1,9 @@
+.idea
+main
+.env
+.env.development
+.env.production
+docker-compose.dev.yml
+.env.development
+#firebase-admin-sdk.json
+.vscode

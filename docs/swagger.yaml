@@ -1,0 +1,440 @@
+basePath: /
+definitions:
+  abstraction.PaginationInfo:
+    properties:
+      count:
+        type: integer
+      more_records:
+        type: boolean
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total_page:
+        type: integer
+    type: object
+  abstraction.QueryFilter:
+    properties:
+      field:
+        type: string
+      value:
+        type: string
+    type: object
+  dto.AuthLoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  dto.AuthLoginResponse:
+    properties:
+      created_at:
+        type: string
+      created_by:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      modified_at:
+        type: string
+      modified_by:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      role:
+        type: string
+      token:
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+  dto.AuthLoginResponseDoc:
+    properties:
+      body:
+        properties:
+          data:
+            $ref: '#/definitions/dto.AuthLoginResponse'
+          meta:
+            $ref: '#/definitions/response.Meta'
+        type: object
+    type: object
+  dto.AuthRegisterRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+  dto.CreateUserRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    required:
+    - name
+    type: object
+  dto.SearchGetResponseDoc:
+    properties:
+      data:
+        items: {}
+        type: array
+      pagination_info:
+        $ref: '#/definitions/abstraction.PaginationInfo'
+    type: object
+  dto.UpdateUserRequest:
+    properties:
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    required:
+    - id
+    type: object
+  dto.UserResponse:
+    properties:
+      created_at:
+        type: string
+      created_by:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      modified_at:
+        type: string
+      modified_by:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+  dto.UserResponseDoc:
+    properties:
+      body:
+        properties:
+          data:
+            $ref: '#/definitions/dto.UserResponse'
+          meta:
+            $ref: '#/definitions/response.Meta'
+        type: object
+    type: object
+  response.Meta:
+    properties:
+      info:
+        $ref: '#/definitions/abstraction.PaginationInfo'
+      message:
+        default: "true"
+        type: string
+      success:
+        default: true
+        type: boolean
+    type: object
+  response.errorResponse:
+    properties:
+      error:
+        type: string
+      meta:
+        $ref: '#/definitions/response.Meta'
+    type: object
+host: localhost:3030
+info:
+  contact: {}
+  description: This is a doc for boilerplate-golang.
+  title: boilerplate-golang
+  version: 0.0.1
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login user
+      parameters:
+      - description: request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AuthLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.AuthLoginResponseDoc'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+      summary: Login user
+      tags:
+      - auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Register user
+      parameters:
+      - description: request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AuthRegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.AuthLoginResponseDoc'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+      security:
+      - BearerAuth: []
+      summary: Register user
+      tags:
+      - auth
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: Get user
+      parameters:
+      - in: query
+        name: page
+        type: integer
+      - in: query
+        name: page_size
+        type: integer
+      - in: query
+        name: search
+        type: string
+      - in: query
+        items:
+          type: string
+        name: sort_by
+        type: array
+      - description: name
+        in: query
+        name: name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.SearchGetResponseDoc'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get user
+      tags:
+      - user
+    post:
+      consumes:
+      - application/json
+      description: Create user
+      parameters:
+      - description: request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UserResponseDoc'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create user
+      tags:
+      - user
+  /users/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete user
+      parameters:
+      - description: id path
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UserResponseDoc'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete user
+      tags:
+      - user
+    get:
+      consumes:
+      - application/json
+      description: Get user by id
+      parameters:
+      - description: id path
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UserResponseDoc'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get user by id
+      tags:
+      - user
+    put:
+      consumes:
+      - application/json
+      description: Update user
+      parameters:
+      - description: id path
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UserResponseDoc'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update user
+      tags:
+      - user
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
