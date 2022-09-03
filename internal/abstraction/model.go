@@ -5,13 +5,11 @@ import (
 
 	"github.com/mcholismalik/boilerplate-golang/pkg/util/date"
 
-	"github.com/google/uuid"
-
 	"gorm.io/gorm"
 )
 
 type Entity struct {
-	ID uuid.UUID `json:"id" gorm:"type:uuid;primaryKey;"`
+	ID string `json:"id" gorm:"primaryKey;"`
 
 	CreatedAt  time.Time  `json:"created_at"`
 	CreatedBy  string     `json:"created_by"`

@@ -8,8 +8,6 @@ import (
 	res "github.com/mcholismalik/boilerplate-golang/pkg/util/response"
 	"github.com/mcholismalik/boilerplate-golang/pkg/util/str"
 	"github.com/mcholismalik/boilerplate-golang/pkg/util/trxmanager"
-
-	"github.com/google/uuid"
 )
 
 type Usecase interface {
@@ -68,12 +66,8 @@ func (u *usecase) Create(ctx abstraction.Context, payload dto.CreateUserRequest)
 	}
 
 	var (
-		data   *model.UserModel
-		userID = uuid.New()
-		user   = model.UserModel{
-			Entity: abstraction.Entity{
-				ID: userID,
-			},
+		data *model.UserModel
+		user = model.UserModel{
 			UserEntity: model.UserEntity{
 				Name:     payload.Name,
 				Email:    email,

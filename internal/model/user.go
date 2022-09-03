@@ -37,7 +37,7 @@ func (UserModel) TableName() string {
 }
 
 func (m *UserModel) BeforeCreate(tx *gorm.DB) (err error) {
-	m.ID = uuid.New()
+	m.ID = uuid.New().String()
 	m.CreatedAt = *date.DateTodayLocal()
 	m.CreatedBy = constant.DB_DEFAULT_CREATED_BY
 
