@@ -1,19 +1,19 @@
 version: "3.9"
 services:
   # postgres
-  # boilerplate-golang-postgres:
-  #   container_name: boilerplate-golang-postgres
-  #   image: postgres:12-alpine 
-  #   environment: 
-  #     - POSTGRES_USER=goboil_clean_user
-  #     - POSTGRES_PASSWORD=f72d8509-c70a-485a-a471-23f899b988ab
-  #     - POSTGRES_DB=goboil_clean_db
-  #   volumes: 
-  #     - boilerplate-golang-postgres:/var/lib/postgresql
-  #   ports:
-  #     - "5432:5432"
-  #   networks:
-  #     - boilerplate-golang-net
+  boilerplate-golang-postgres:
+    container_name: boilerplate-golang-postgres
+    image: postgres:12-alpine 
+    environment: 
+      - POSTGRES_USER=db_user
+      - POSTGRES_PASSWORD=db_pass
+      - POSTGRES_DB=boilerplate_golang_db
+    volumes: 
+      - boilerplate-golang-postgres:/var/lib/postgresql
+    ports:
+      - "5432:5432"
+    networks:
+      - boilerplate-golang-net
   
   # redis
   # boilerplate-golang-redis:
@@ -47,10 +47,10 @@ services:
 volumes:
   boilerplate-golang-postgres:
     external: true
-  boilerplate-golang-redis:
-    external: true
-  boilerplate-golang-redis-conf:
-    external: true
+  # boilerplate-golang-redis:
+  #   external: true
+  # boilerplate-golang-redis-conf:
+  #   external: true
 
 networks:
   boilerplate-golang-net:

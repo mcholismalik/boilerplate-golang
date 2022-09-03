@@ -1,6 +1,6 @@
 # boilerplate-golang
-Test practical devsecops, app codecademy with websocket & clean architecture
-- HOST : http://localhost:3030/web/playground
+Boilerplate Golang
+- HOST : http://localhost:3030
 
 ## Pre Requisite
 - Go version 1.18.3
@@ -14,7 +14,7 @@ $ go mod tidy
 $ ENV=DEV go run main.go
 
 # open
-$ Open url http://localhost:3030/web/playground
+$ Open url http://localhost:3030
 ```
 
 ## Architecture 

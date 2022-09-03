@@ -21,7 +21,7 @@ type UserEntity struct {
 	Password     string `json:"password" validate:"required" gorm:"-"`
 }
 
-type UserEntityModel struct {
+type UserModel struct {
 	// abstraction
 	abstraction.Entity
 
@@ -29,14 +29,14 @@ type UserEntityModel struct {
 	UserEntity
 
 	// context
-	Context *abstraction.Context `json:"-" gorm:"-"`
+	Context abstraction.Context `json:"-" gorm:"-"`
 }
 
-func (UserEntityModel) TableName() string {
+func (UserModel) TableName() string {
 	return "users"
 }
 
-func (m *UserEntityModel) BeforeCreate(tx *gorm.DB) (err error) {
+func (m *UserModel) BeforeCreate(tx *gorm.DB) (err error) {
 	m.ID = uuid.New()
 	m.CreatedAt = *date.DateTodayLocal()
 	m.CreatedBy = constant.DB_DEFAULT_CREATED_BY
@@ -46,18 +46,18 @@ func (m *UserEntityModel) BeforeCreate(tx *gorm.DB) (err error) {
 	return
 }
 
-func (m *UserEntityModel) BeforeUpdate(tx *gorm.DB) (err error) {
+func (m *UserModel) BeforeUpdate(tx *gorm.DB) (err error) {
 	m.ModifiedAt = date.DateTodayLocal()
 	m.ModifiedBy = &m.Context.Auth.Name
 	return
 }
 
-func (m *UserEntityModel) HashPassword() {
+func (m *UserModel) HashPassword() {
 	bytes, _ := bcrypt.GenerateFromPassword([]byte(m.Password), bcrypt.DefaultCost)
 	m.PasswordHash = string(bytes)
 }
 
-func (m *UserEntityModel) GenerateToken() (string, error) {
+func (m *UserModel) GenerateToken() (string, error) {
 	var (
 		jwtKey = os.Getenv("JWT_KEY")
 	)

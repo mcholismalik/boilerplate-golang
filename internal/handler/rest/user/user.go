@@ -1,8 +1,6 @@
 package user
 
 import (
-	"fmt"
-
 	"github.com/mcholismalik/boilerplate-golang/internal/abstraction"
 	"github.com/mcholismalik/boilerplate-golang/internal/dto"
 	"github.com/mcholismalik/boilerplate-golang/internal/factory"
@@ -11,7 +9,6 @@ import (
 	"github.com/mcholismalik/boilerplate-golang/pkg/constant"
 	res "github.com/mcholismalik/boilerplate-golang/pkg/util/response"
 
-	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 )
 
@@ -38,31 +35,31 @@ func (h *handler) Route(g *echo.Group) {
 // @Accept json
 // @Produce json
 // @Security BearerAuth
-// @param request query abstraction.SearchGetRequest true "request query"
+// @param request query abstraction.FilterParam true "request query"
 // @Param name query string false "name"
 // @Success 200 {object} dto.SearchGetResponseDoc
 // @Failure 400 {object} res.errorResponse
 // @Failure 404 {object} res.errorResponse
 // @Failure 500 {object} res.errorResponse
-// @Router /users [get]
+// @Router /rest/users [get]
 func (h *handler) Get(c echo.Context) error {
-	cc := c.Request().Context().Value(constant.CONTEXT_KEY).(*abstraction.Context)
+	cc := c.Request().Context().Value(constant.CONTEXT_KEY).(abstraction.Context)
 
-	payload := new(abstraction.SearchGetRequest)
+	payload := new(abstraction.FilterParam)
 	if err := c.Bind(payload); err != nil {
 		return res.ErrorBuilder(&res.ErrorConstant.BadRequest, err).Send(c)
 	}
 	if err := c.Validate(payload); err != nil {
 		return res.ErrorBuilder(&res.ErrorConstant.Validation, err).Send(c)
 	}
-	abstraction.BindFilterSort[model.UserEntity](c, model.UserEntity{}, "users", payload)
+	abstraction.BindFilterSort(c, model.UserEntity{}, "users", payload)
 
-	result, err := h.Factory.Usecase.User.Find(cc, payload)
+	result, pagination, err := h.Factory.Usecase.User.Find(cc, payload)
 	if err != nil {
 		return res.ErrorResponse(err).Send(c)
 	}
 
-	return res.CustomSuccessBuilder(200, result.Datas, "Get users success", &result.PaginationInfo).Send(c)
+	return res.CustomSuccessBuilder(200, result, "Get users success", &pagination).Send(c)
 }
 
 // Get user by id
@@ -77,9 +74,9 @@ func (h *handler) Get(c echo.Context) error {
 // @Failure 400 {object} res.errorResponse
 // @Failure 404 {object} res.errorResponse
 // @Failure 500 {object} res.errorResponse
-// @Router /users/{id} [get]
+// @Router /rest/users/{id} [get]
 func (h *handler) GetByID(c echo.Context) error {
-	cc := c.Request().Context().Value(constant.CONTEXT_KEY).(*abstraction.Context)
+	cc := c.Request().Context().Value(constant.CONTEXT_KEY).(abstraction.Context)
 
 	payload := new(dto.ByIDRequest)
 	if err := c.Bind(payload); err != nil {
@@ -90,7 +87,7 @@ func (h *handler) GetByID(c echo.Context) error {
 		return response.Send(c)
 	}
 
-	result, err := h.Factory.Usecase.User.FindByID(cc, payload)
+	result, err := h.Factory.Usecase.User.FindByID(cc, *payload)
 	if err != nil {
 		return res.ErrorResponse(err).Send(c)
 	}
@@ -109,9 +106,9 @@ func (h *handler) GetByID(c echo.Context) error {
 // @Failure 400 {object} res.errorResponse
 // @Failure 404 {object} res.errorResponse
 // @Failure 500 {object} res.errorResponse
-// @Router /users [post]
+// @Router /rest/users [post]
 func (h *handler) Create(c echo.Context) error {
-	cc := c.Request().Context().Value(constant.CONTEXT_KEY).(*abstraction.Context)
+	cc := c.Request().Context().Value(constant.CONTEXT_KEY).(abstraction.Context)
 
 	payload := new(dto.CreateUserRequest)
 	if err := c.Bind(payload); err != nil {
@@ -121,7 +118,7 @@ func (h *handler) Create(c echo.Context) error {
 		return res.ErrorBuilder(&res.ErrorConstant.Validation, err).Send(c)
 	}
 
-	result, err := h.Factory.Usecase.User.Create(cc, payload)
+	result, err := h.Factory.Usecase.User.Create(cc, *payload)
 	if err != nil {
 		return res.ErrorResponse(err).Send(c)
 	}
@@ -142,16 +139,11 @@ func (h *handler) Create(c echo.Context) error {
 // @Failure 400 {object} res.errorResponse
 // @Failure 404 {object} res.errorResponse
 // @Failure 500 {object} res.errorResponse
-// @Router /users/{id} [put]
+// @Router /rest/users/{id} [put]
 func (h *handler) Update(c echo.Context) error {
-	cc := c.Request().Context().Value(constant.CONTEXT_KEY).(*abstraction.Context)
+	cc := c.Request().Context().Value(constant.CONTEXT_KEY).(abstraction.Context)
 
 	payload := new(dto.UpdateUserRequest)
-	id, err := uuid.Parse(c.Param("id"))
-	if err != nil {
-		return res.ErrorBuilder(&res.ErrorConstant.BadRequest, fmt.Errorf("id must be uuid")).Send(c)
-	}
-	payload.ID = id
 	if err := c.Bind(&payload); err != nil {
 		return res.ErrorBuilder(&res.ErrorConstant.BadRequest, err).Send(c)
 	}
@@ -159,7 +151,7 @@ func (h *handler) Update(c echo.Context) error {
 		return res.ErrorBuilder(&res.ErrorConstant.Validation, err).Send(c)
 	}
 
-	result, err := h.Factory.Usecase.User.Update(cc, payload)
+	result, err := h.Factory.Usecase.User.Update(cc, *payload)
 	if err != nil {
 		return res.ErrorResponse(err).Send(c)
 	}
@@ -179,9 +171,9 @@ func (h *handler) Update(c echo.Context) error {
 // @Failure 400 {object} res.errorResponse
 // @Failure 404 {object} res.errorResponse
 // @Failure 500 {object} res.errorResponse
-// @Router /users/{id} [delete]
+// @Router /rest/users/{id} [delete]
 func (h *handler) Delete(c echo.Context) error {
-	cc := c.Request().Context().Value(constant.CONTEXT_KEY).(*abstraction.Context)
+	cc := c.Request().Context().Value(constant.CONTEXT_KEY).(abstraction.Context)
 
 	payload := new(dto.ByIDRequest)
 	if err := c.Bind(payload); err != nil {
@@ -191,7 +183,7 @@ func (h *handler) Delete(c echo.Context) error {
 		return res.ErrorBuilder(&res.ErrorConstant.Validation, err).Send(c)
 	}
 
-	result, err := h.Factory.Usecase.User.Delete(cc, payload)
+	result, err := h.Factory.Usecase.User.Delete(cc, *payload)
 	if err != nil {
 		return res.ErrorResponse(err).Send(c)
 	}

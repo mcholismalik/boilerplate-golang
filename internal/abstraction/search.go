@@ -7,16 +7,11 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type SearchGetRequest struct {
+type FilterParam struct {
 	Pagination
-	Search  string   `query:"search"`
-	SortBy  []string `query:"sort_by"`
-	Filters []QueryFilter
-}
-
-type SearchGetResponse[T any] struct {
-	Datas          []T `json:"data"`
-	PaginationInfo PaginationInfo
+	Search string   `query:"search"`
+	SortBy []string `query:"sort_by"`
+	Query  []QueryFilter
 }
 
 type QueryFilter struct {
@@ -24,12 +19,12 @@ type QueryFilter struct {
 	Value string
 }
 
-func BindFilterSort[T any](c echo.Context, model T, name string, payload *SearchGetRequest) {
-	BindFilter[T](c, model, name, payload)
-	BindSort[T](c, model, name, payload)
+func BindFilterSort[T any](c echo.Context, model T, name string, payload *FilterParam) {
+	BindFilter(c, model, name, payload)
+	BindSort(c, model, name, payload)
 }
 
-func BindFilter[T any](c echo.Context, model T, name string, payload *SearchGetRequest) {
+func BindFilter[T any](c echo.Context, model T, name string, payload *FilterParam) {
 	var filters []QueryFilter
 
 	req := c.Request()
@@ -37,10 +32,10 @@ func BindFilter[T any](c echo.Context, model T, name string, payload *SearchGetR
 	modelVal := reflect.ValueOf(model)
 
 	ignores := map[string]bool{
-		"page":      true,
-		"page_size": true,
-		"search":    true,
-		"sort_by":   true,
+		"page":    true,
+		"limit":   true,
+		"search":  true,
+		"sort_by": true,
 	}
 	for field, values := range queries {
 		if ignores[field] {
@@ -57,10 +52,10 @@ func BindFilter[T any](c echo.Context, model T, name string, payload *SearchGetR
 		}
 	}
 
-	payload.Filters = filters
+	payload.Query = filters
 }
 
-func BindSort[T any](c echo.Context, model T, name string, payload *SearchGetRequest) {
+func BindSort[T any](c echo.Context, model T, name string, payload *FilterParam) {
 	var sortBy []string
 
 	req := c.Request()

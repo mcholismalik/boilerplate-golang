@@ -3,8 +3,6 @@ package dto
 import (
 	"github.com/mcholismalik/boilerplate-golang/internal/model"
 	res "github.com/mcholismalik/boilerplate-golang/pkg/util/response"
-
-	"github.com/google/uuid"
 )
 
 // request
@@ -18,17 +16,17 @@ type (
 
 type (
 	UpdateUserRequest struct {
-		ID       uuid.UUID `param:"id" validate:"required"`
-		Name     string    `json:"name"`
-		Email    string    `json:"email" validate:"omitempty,email"`
-		Password string    `json:"password"`
+		ID       string `param:"id" validate:"required"`
+		Name     string `json:"name"`
+		Email    string `json:"email" validate:"omitempty,email"`
+		Password string `json:"password"`
 	}
 )
 
 // response
 type (
 	UserResponse struct {
-		model.UserEntityModel
+		Data model.UserModel
 	}
 	UserResponseDoc struct {
 		Body struct {

@@ -11,7 +11,7 @@ import (
 func UserTableSeeder(conn *gorm.DB) {
 	trx := conn.Begin()
 
-	if err := trx.Create(&model.UserEntityModel{
+	if err := trx.Create(&model.UserModel{
 		UserEntity: model.UserEntity{
 			Name:     "admin",
 			Email:    "admin@gmail.com",

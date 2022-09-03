@@ -11,7 +11,7 @@ import (
 
 func Context(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		cc := &abstraction.Context{
+		cc := abstraction.Context{
 			Context: c.Request().Context(),
 		}
 

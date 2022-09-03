@@ -11,7 +11,7 @@ import (
 	"github.com/google/uuid"
 )
 
-var Context = &abstraction.Context{
+var Context = abstraction.Context{
 	Context: context.Background(),
 	Auth: &abstraction.AuthContext{
 		ID:    uuid.New(),

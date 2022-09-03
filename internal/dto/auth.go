@@ -21,7 +21,7 @@ type (
 	AuthLoginResponse struct {
 		Token string `json:"token"`
 		Role  string `json:"role"`
-		model.UserEntityModel
+		model.UserModel
 	}
 	AuthLoginResponseDoc struct {
 		Body struct {
@@ -31,7 +31,7 @@ type (
 	}
 
 	AuthRegisterResponse struct {
-		model.UserEntityModel
+		*model.UserModel
 	}
 	AuthRegisterResponseDoc struct {
 		Body struct {

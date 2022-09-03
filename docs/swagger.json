@@ -9,7 +9,7 @@
     "host": "localhost:3030",
     "basePath": "/",
     "paths": {
-        "/auth/login": {
+        "/rest/auth/login": {
             "post": {
                 "description": "Login user",
                 "consumes": [
@@ -61,7 +61,7 @@
                 }
             }
         },
-        "/auth/register": {
+        "/rest/auth/register": {
             "post": {
                 "security": [
                     {
@@ -118,7 +118,7 @@
                 }
             }
         },
-        "/users": {
+        "/rest/users": {
             "get": {
                 "security": [
                     {
@@ -250,7 +250,7 @@
                 }
             }
         },
-        "/users/{id}": {
+        "/rest/users/{id}": {
             "get": {
                 "security": [
                     {

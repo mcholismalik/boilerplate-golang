@@ -35,9 +35,9 @@ func (h *handler) Route(g *echo.Group) {
 // @Failure 400 {object} res.errorResponse
 // @Failure 404 {object} res.errorResponse
 // @Failure 500 {object} res.errorResponse
-// @Router /auth/login [post]
+// @Router /rest/auth/login [post]
 func (h *handler) Login(c echo.Context) error {
-	cc := c.Request().Context().Value(constant.CONTEXT_KEY).(*abstraction.Context)
+	cc := c.Request().Context().Value(constant.CONTEXT_KEY).(abstraction.Context)
 
 	payload := new(dto.AuthLoginRequest)
 	if err := c.Bind(payload); err != nil {
@@ -47,7 +47,7 @@ func (h *handler) Login(c echo.Context) error {
 		return res.ErrorBuilder(&res.ErrorConstant.Validation, err).Send(c)
 	}
 
-	data, err := h.Factory.Usecase.Auth.Login(cc, payload)
+	data, err := h.Factory.Usecase.Auth.Login(cc, *payload)
 	if err != nil {
 		return res.ErrorResponse(err).Send(c)
 	}
@@ -67,9 +67,9 @@ func (h *handler) Login(c echo.Context) error {
 // @Failure 400 {object} res.errorResponse
 // @Failure 404 {object} res.errorResponse
 // @Failure 500 {object} res.errorResponse
-// @Router /auth/register [post]
+// @Router /rest/auth/register [post]
 func (h *handler) Register(c echo.Context) error {
-	cc := c.Request().Context().Value(constant.CONTEXT_KEY).(*abstraction.Context)
+	cc := c.Request().Context().Value(constant.CONTEXT_KEY).(abstraction.Context)
 
 	payload := new(dto.AuthRegisterRequest)
 	if err := c.Bind(payload); err != nil {
@@ -79,7 +79,7 @@ func (h *handler) Register(c echo.Context) error {
 		return res.ErrorBuilder(&res.ErrorConstant.Validation, err).Send(c)
 	}
 
-	data, err := h.Factory.Usecase.Auth.Register(cc, payload)
+	data, err := h.Factory.Usecase.Auth.Register(cc, *payload)
 	if err != nil {
 		return res.ErrorResponse(err).Send(c)
 	}

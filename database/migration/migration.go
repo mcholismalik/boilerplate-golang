@@ -31,7 +31,7 @@ func Init() {
 	mgConfigurations := map[string]Migration{
 		constant.DB_GOBOIL_CLEAN: &migration{
 			DbModels: &[]interface{}{
-				&model.UserEntityModel{},
+				&model.UserModel{},
 			},
 			IsAutoMigrate: true,
 		},

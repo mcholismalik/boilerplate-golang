@@ -12,8 +12,8 @@ import (
 )
 
 type Usecase interface {
-	Login(ctx *abstraction.Context, payload *dto.AuthLoginRequest) (*dto.AuthLoginResponse, error)
-	Register(ctx *abstraction.Context, payload *dto.AuthRegisterRequest) (*dto.AuthRegisterResponse, error)
+	Login(ctx abstraction.Context, payload dto.AuthLoginRequest) (dto.AuthLoginResponse, error)
+	Register(ctx abstraction.Context, payload dto.AuthRegisterRequest) (dto.AuthRegisterResponse, error)
 }
 
 type usecase struct {
@@ -24,10 +24,10 @@ func NewUsecase(f repository.Factory) *usecase {
 	return &usecase{f}
 }
 
-func (s *usecase) Login(ctx *abstraction.Context, payload *dto.AuthLoginRequest) (*dto.AuthLoginResponse, error) {
-	var result *dto.AuthLoginResponse
+func (s *usecase) Login(ctx abstraction.Context, payload dto.AuthLoginRequest) (dto.AuthLoginResponse, error) {
+	var result dto.AuthLoginResponse
 
-	data, err := s.RepositoryFactory.UserRepository.FindByEmail(ctx, &payload.Email)
+	data, err := s.RepositoryFactory.UserRepository.FindByEmail(ctx, payload.Email)
 	if data == nil {
 		return result, res.ErrorBuilder(&res.ErrorConstant.EmailOrPasswordIncorrect, err)
 	}
@@ -41,22 +41,22 @@ func (s *usecase) Login(ctx *abstraction.Context, payload *dto.AuthLoginRequest)
 		return result, res.ErrorBuilder(&res.ErrorConstant.InternalServerError, err)
 	}
 
-	result = &dto.AuthLoginResponse{
-		Token:           token,
-		UserEntityModel: *data,
+	result = dto.AuthLoginResponse{
+		Token:     token,
+		UserModel: *data,
 	}
 
 	return result, nil
 }
 
-func (s *usecase) Register(ctx *abstraction.Context, payload *dto.AuthRegisterRequest) (*dto.AuthRegisterResponse, error) {
-	var result *dto.AuthRegisterResponse
-	var data model.UserEntityModel
+func (s *usecase) Register(ctx abstraction.Context, payload dto.AuthRegisterRequest) (dto.AuthRegisterResponse, error) {
+	var result dto.AuthRegisterResponse
+	var data *model.UserModel
 	var err error
 
 	data.UserEntity = payload.UserEntity
 
-	if err = trxmanager.New(s.RepositoryFactory.Db).WithTrx(ctx, func(ctx *abstraction.Context) error {
+	if err = trxmanager.New(s.RepositoryFactory.Db).WithTrx(ctx, func(ctx abstraction.Context) error {
 		data, err = s.RepositoryFactory.UserRepository.Create(ctx, data)
 		if err != nil {
 			return err
@@ -67,8 +67,8 @@ func (s *usecase) Register(ctx *abstraction.Context, payload *dto.AuthRegisterRe
 		return result, err
 	}
 
-	result = &dto.AuthRegisterResponse{
-		UserEntityModel: data,
+	result = dto.AuthRegisterResponse{
+		UserModel: data,
 	}
 
 	return result, nil

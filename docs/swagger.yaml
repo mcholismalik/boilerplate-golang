@@ -170,7 +170,7 @@ info:
   title: boilerplate-golang
   version: 0.0.1
 paths:
-  /auth/login:
+  /rest/auth/login:
     post:
       consumes:
       - application/json
@@ -204,7 +204,7 @@ paths:
       summary: Login user
       tags:
       - auth
-  /auth/register:
+  /rest/auth/register:
     post:
       consumes:
       - application/json
@@ -240,7 +240,7 @@ paths:
       summary: Register user
       tags:
       - auth
-  /users:
+  /rest/users:
     get:
       consumes:
       - application/json
@@ -323,7 +323,7 @@ paths:
       summary: Create user
       tags:
       - user
-  /users/{id}:
+  /rest/users/{id}:
     delete:
       consumes:
       - application/json

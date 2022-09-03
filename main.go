@@ -4,8 +4,7 @@ import (
 	"os"
 
 	"github.com/mcholismalik/boilerplate-golang/internal/factory"
-	"github.com/mcholismalik/boilerplate-golang/internal/handler/web"
-	"github.com/mcholismalik/boilerplate-golang/internal/handler/ws"
+	"github.com/mcholismalik/boilerplate-golang/internal/handler"
 	"github.com/mcholismalik/boilerplate-golang/internal/middleware"
 	"github.com/mcholismalik/boilerplate-golang/pkg/constant"
 	"github.com/mcholismalik/boilerplate-golang/pkg/util/env"
@@ -35,21 +34,10 @@ func init() {
 func main() {
 	var PORT = os.Getenv(constant.PORT)
 
-	// dependency
-	// db.Init()
-	// migration.Init()
-	// seeder.Init()
-
 	e := echo.New()
-	middleware.Init(e)
-
-	// factory
 	f := factory.Init()
-
-	// handler
-	// rest.Init(e, f)
-	web.Init(e, f)
-	ws.Init(e, f)
+	middleware.Init(e)
+	handler.Init(e, f)
 
 	e.Logger.Fatal(e.Start(":" + PORT))
 }
