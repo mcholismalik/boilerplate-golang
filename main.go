@@ -3,13 +3,14 @@ package main
 import (
 	"os"
 
+	"github.com/mcholismalik/boilerplate-golang/internal/driver/db"
+	"github.com/mcholismalik/boilerplate-golang/internal/driver/http"
+	"github.com/mcholismalik/boilerplate-golang/internal/driver/migration"
+	"github.com/mcholismalik/boilerplate-golang/internal/driver/seeder"
 	"github.com/mcholismalik/boilerplate-golang/internal/factory"
-	"github.com/mcholismalik/boilerplate-golang/internal/handler"
-	"github.com/mcholismalik/boilerplate-golang/internal/middleware"
 	"github.com/mcholismalik/boilerplate-golang/pkg/constant"
 	"github.com/mcholismalik/boilerplate-golang/pkg/util/env"
 
-	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
 )
 
@@ -32,12 +33,14 @@ func init() {
 // @host localhost:3030
 // @BasePath /
 func main() {
-	var PORT = os.Getenv(constant.PORT)
+	// repository driver
+	db.Init()
+	migration.Init()
+	seeder.Init()
 
-	e := echo.New()
+	// factory
 	f := factory.Init()
-	middleware.Init(e)
-	handler.Init(e, f)
 
-	e.Logger.Fatal(e.Start(":" + PORT))
+	// delivery driver
+	http.Init(f)
 }

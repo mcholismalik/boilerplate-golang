@@ -3,7 +3,7 @@ package response
 import (
 	"net/http"
 
-	"github.com/mcholismalik/boilerplate-golang/internal/abstraction"
+	"github.com/mcholismalik/boilerplate-golang/internal/model/abstraction"
 
 	"github.com/labstack/echo/v4"
 )

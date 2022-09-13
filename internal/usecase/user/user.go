@@ -3,10 +3,10 @@ package user
 import (
 	"context"
 
-	"github.com/mcholismalik/boilerplate-golang/internal/abstraction"
-	"github.com/mcholismalik/boilerplate-golang/internal/dto"
 	"github.com/mcholismalik/boilerplate-golang/internal/factory/repository"
-	"github.com/mcholismalik/boilerplate-golang/internal/model"
+	"github.com/mcholismalik/boilerplate-golang/internal/model/abstraction"
+	"github.com/mcholismalik/boilerplate-golang/internal/model/dto"
+	model "github.com/mcholismalik/boilerplate-golang/internal/model/entity"
 	res "github.com/mcholismalik/boilerplate-golang/pkg/util/response"
 	"github.com/mcholismalik/boilerplate-golang/pkg/util/str"
 	"github.com/mcholismalik/boilerplate-golang/pkg/util/trxmanager"

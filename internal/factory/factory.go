@@ -1,12 +1,9 @@
 package factory
 
 import (
-	db "github.com/mcholismalik/boilerplate-golang/database"
-	"github.com/mcholismalik/boilerplate-golang/database/migration"
-	"github.com/mcholismalik/boilerplate-golang/database/seeder"
-	"github.com/mcholismalik/boilerplate-golang/internal/abstraction"
 	"github.com/mcholismalik/boilerplate-golang/internal/factory/repository"
 	"github.com/mcholismalik/boilerplate-golang/internal/factory/usecase"
+	"github.com/mcholismalik/boilerplate-golang/internal/model/abstraction"
 )
 
 type Factory struct {
@@ -17,10 +14,6 @@ type Factory struct {
 
 func Init() Factory {
 	f := Factory{}
-
-	db.Init()
-	migration.Init()
-	seeder.Init()
 
 	f.Repository = repository.Init()
 	f.Usecase = usecase.Init(f.Repository)

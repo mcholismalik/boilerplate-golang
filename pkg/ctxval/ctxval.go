@@ -3,7 +3,7 @@ package ctxval
 import (
 	"context"
 
-	"github.com/mcholismalik/boilerplate-golang/internal/abstraction"
+	"github.com/mcholismalik/boilerplate-golang/internal/model/abstraction"
 )
 
 type key string

@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/mcholismalik/boilerplate-golang/internal/abstraction"
+	"github.com/mcholismalik/boilerplate-golang/internal/model/abstraction"
 	"github.com/mcholismalik/boilerplate-golang/pkg/ctxval"
 
 	"github.com/sirupsen/logrus"
