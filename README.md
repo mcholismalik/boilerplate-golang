@@ -52,7 +52,7 @@ This project have some example for rest, ws, web :]
 2. Web
   - Playground
   - Bubble
-3. WebSocket
+3. Webocket
   - Course
 
 ## Documentation
