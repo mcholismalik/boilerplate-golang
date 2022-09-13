@@ -6,8 +6,8 @@ import (
 	"os"
 
 	docs "github.com/mcholismalik/boilerplate-golang/docs"
+	rest "github.com/mcholismalik/boilerplate-golang/internal/delivery/api"
 	"github.com/mcholismalik/boilerplate-golang/internal/delivery/middleware"
-	"github.com/mcholismalik/boilerplate-golang/internal/delivery/rest"
 	"github.com/mcholismalik/boilerplate-golang/internal/delivery/web"
 	"github.com/mcholismalik/boilerplate-golang/internal/delivery/ws"
 	"github.com/mcholismalik/boilerplate-golang/internal/factory"
