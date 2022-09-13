@@ -7,7 +7,6 @@ import (
 	"github.com/mcholismalik/boilerplate-golang/internal/driver/http"
 	"github.com/mcholismalik/boilerplate-golang/internal/driver/migration"
 	"github.com/mcholismalik/boilerplate-golang/internal/driver/seeder"
-	"github.com/mcholismalik/boilerplate-golang/internal/driver/sentry"
 	"github.com/mcholismalik/boilerplate-golang/internal/factory"
 	"github.com/mcholismalik/boilerplate-golang/pkg/constant"
 	"github.com/mcholismalik/boilerplate-golang/pkg/util/env"
@@ -43,6 +42,6 @@ func main() {
 	f := factory.Init()
 
 	// delivery driver
-	sentry.Init()
+	// sentry.Init()
 	http.Init(f)
 }

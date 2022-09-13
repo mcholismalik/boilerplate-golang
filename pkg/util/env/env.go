@@ -25,14 +25,16 @@ func (e *env) Load(env string) {
 	var envFile string
 	switch env {
 	case "STG":
-		envFile = "staging"
+		envFile = ".env.staging"
 	case "PROD":
-		envFile = "production"
+		envFile = ".env.production"
+	case "DEV":
+		envFile = ".env.production"
 	default:
-		envFile = "development"
+		envFile = ".env"
 	}
 
-	err := godotenv.Load(`.env.` + envFile)
+	err := godotenv.Load(envFile)
 	if err != nil {
 		logrus.WithFields(logrus.Fields{
 			"cause": err,
