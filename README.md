@@ -1,9 +1,9 @@
 # boilerplate-golang
-Boilerplate Golang
+Boilerplate Golang with Clean Architecture
 - HOST : http://localhost:3030
 
 ## Pre Requisite
-- Go version 1.18.3
+- Go version 1.19
 
 ## How To Run
 ``` bash
@@ -18,28 +18,23 @@ $ Open url http://localhost:3030
 ```
 
 ## Architecture 
-This project built in clean architecture that contains :
-1. Factory   
-2. Middleware 
-3. Handler
-4. Binder
-5. Validation
-6. Usecase
-7. Repository
-8. Model
-9. Database
-9. Migration
-10. Seed
+This project built in clean architecture that contains some layer :
+1. Driver   
+2. Factory 
+3. Delivery
+4. Repository
+5. Usecase
+6. Model
 
 # Packages
-This project have some existing packages :
-1. Elasticsearch   
-2. Firebase
-3. Sentry
-4. Ws
-5. Cron
-6. Util
-7. Database (postgres, mysql)
+This project have some existing driver :
+1. Http (rest, ws, web)
+2. Database (postgres, mysql)
+3. Elasticsearch
+4. Firebase
+5. Sentry
+6. Websocket
+7. Cron 
 
 # Examples
 This project have some example for rest, ws, web :]
@@ -57,7 +52,7 @@ This project have some example for rest, ws, web :]
 2. Web
   - Playground
   - Bubble
-3. Ws
+3. WebSocket
   - Course
 
 ## Documentation
