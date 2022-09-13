@@ -1,12 +1,14 @@
 package model
 
 import (
+	"context"
 	"os"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/mcholismalik/boilerplate-golang/internal/abstraction"
 	"github.com/mcholismalik/boilerplate-golang/pkg/constant"
+	"github.com/mcholismalik/boilerplate-golang/pkg/ctxval"
 	"github.com/mcholismalik/boilerplate-golang/pkg/util/date"
 
 	"github.com/golang-jwt/jwt"
@@ -29,7 +31,7 @@ type UserModel struct {
 	UserEntity
 
 	// context
-	Context abstraction.Context `json:"-" gorm:"-"`
+	Context context.Context `json:"-" gorm:"-"`
 }
 
 func (UserModel) TableName() string {
@@ -48,7 +50,11 @@ func (m *UserModel) BeforeCreate(tx *gorm.DB) (err error) {
 
 func (m *UserModel) BeforeUpdate(tx *gorm.DB) (err error) {
 	m.ModifiedAt = date.DateTodayLocal()
-	m.ModifiedBy = &m.Context.Auth.Name
+
+	authCtx := ctxval.GetAuthValue(m.Context)
+	if authCtx != nil {
+		m.ModifiedBy = &authCtx.Name
+	}
 	return
 }
 

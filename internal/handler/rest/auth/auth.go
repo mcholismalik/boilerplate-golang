@@ -1,11 +1,8 @@
 package auth
 
 import (
-	"github.com/mcholismalik/boilerplate-golang/internal/abstraction"
 	"github.com/mcholismalik/boilerplate-golang/internal/dto"
 	"github.com/mcholismalik/boilerplate-golang/internal/factory"
-	"github.com/mcholismalik/boilerplate-golang/internal/middleware"
-	"github.com/mcholismalik/boilerplate-golang/pkg/constant"
 	res "github.com/mcholismalik/boilerplate-golang/pkg/util/response"
 
 	"github.com/labstack/echo/v4"
@@ -20,8 +17,8 @@ func NewHandler(f factory.Factory) *handler {
 }
 
 func (h *handler) Route(g *echo.Group) {
-	g.POST("/login", h.Login, middleware.Context)
-	g.POST("/register", h.Register, middleware.Context)
+	g.POST("/login", h.Login)
+	g.POST("/register", h.Register)
 }
 
 // Login
@@ -37,8 +34,6 @@ func (h *handler) Route(g *echo.Group) {
 // @Failure 500 {object} res.errorResponse
 // @Router /rest/auth/login [post]
 func (h *handler) Login(c echo.Context) error {
-	cc := c.Request().Context().Value(constant.CONTEXT_KEY).(abstraction.Context)
-
 	payload := new(dto.AuthLoginRequest)
 	if err := c.Bind(payload); err != nil {
 		return res.ErrorBuilder(&res.ErrorConstant.BadRequest, err).Send(c)
@@ -47,7 +42,7 @@ func (h *handler) Login(c echo.Context) error {
 		return res.ErrorBuilder(&res.ErrorConstant.Validation, err).Send(c)
 	}
 
-	data, err := h.Factory.Usecase.Auth.Login(cc, *payload)
+	data, err := h.Factory.Usecase.Auth.Login(c.Request().Context(), *payload)
 	if err != nil {
 		return res.ErrorResponse(err).Send(c)
 	}
@@ -69,8 +64,6 @@ func (h *handler) Login(c echo.Context) error {
 // @Failure 500 {object} res.errorResponse
 // @Router /rest/auth/register [post]
 func (h *handler) Register(c echo.Context) error {
-	cc := c.Request().Context().Value(constant.CONTEXT_KEY).(abstraction.Context)
-
 	payload := new(dto.AuthRegisterRequest)
 	if err := c.Bind(payload); err != nil {
 		return res.ErrorBuilder(&res.ErrorConstant.BadRequest, err).Send(c)
@@ -79,7 +72,7 @@ func (h *handler) Register(c echo.Context) error {
 		return res.ErrorBuilder(&res.ErrorConstant.Validation, err).Send(c)
 	}
 
-	data, err := h.Factory.Usecase.Auth.Register(cc, *payload)
+	data, err := h.Factory.Usecase.Auth.Register(c.Request().Context(), *payload)
 	if err != nil {
 		return res.ErrorResponse(err).Send(c)
 	}

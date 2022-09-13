@@ -1,6 +1,8 @@
 package user
 
 import (
+	"context"
+
 	"github.com/mcholismalik/boilerplate-golang/internal/abstraction"
 	"github.com/mcholismalik/boilerplate-golang/internal/dto"
 	"github.com/mcholismalik/boilerplate-golang/internal/factory/repository"
@@ -11,11 +13,11 @@ import (
 )
 
 type Usecase interface {
-	Find(ctx abstraction.Context, filterParam *abstraction.FilterParam) ([]dto.UserResponse, abstraction.PaginationInfo, error)
-	FindByID(ctx abstraction.Context, payload dto.ByIDRequest) (dto.UserResponse, error)
-	Create(ctx abstraction.Context, payload dto.CreateUserRequest) (dto.UserResponse, error)
-	Update(ctx abstraction.Context, payload dto.UpdateUserRequest) (dto.UserResponse, error)
-	Delete(ctx abstraction.Context, payload dto.ByIDRequest) (dto.UserResponse, error)
+	Find(ctx context.Context, filterParam abstraction.Filter) ([]dto.UserResponse, abstraction.PaginationInfo, error)
+	FindByID(ctx context.Context, payload dto.ByIDRequest) (dto.UserResponse, error)
+	Create(ctx context.Context, payload dto.CreateUserRequest) (dto.UserResponse, error)
+	Update(ctx context.Context, payload dto.UpdateUserRequest) (dto.UserResponse, error)
+	Delete(ctx context.Context, payload dto.ByIDRequest) (dto.UserResponse, error)
 }
 
 type usecase struct {
@@ -26,7 +28,7 @@ func NewUsecase(f repository.Factory) *usecase {
 	return &usecase{f}
 }
 
-func (u *usecase) Find(ctx abstraction.Context, filterParam *abstraction.FilterParam) (result []dto.UserResponse, pagination abstraction.PaginationInfo, err error) {
+func (u *usecase) Find(ctx context.Context, filterParam abstraction.Filter) (result []dto.UserResponse, pagination abstraction.PaginationInfo, err error) {
 	users, info, err := u.RepositoryFactory.UserRepository.Find(ctx, filterParam)
 	if err != nil {
 		return nil, pagination, res.ErrorBuilder(&res.ErrorConstant.InternalServerError, err)
@@ -42,7 +44,7 @@ func (u *usecase) Find(ctx abstraction.Context, filterParam *abstraction.FilterP
 	return result, pagination, nil
 }
 
-func (u *usecase) FindByID(ctx abstraction.Context, payload dto.ByIDRequest) (dto.UserResponse, error) {
+func (u *usecase) FindByID(ctx context.Context, payload dto.ByIDRequest) (dto.UserResponse, error) {
 	var result dto.UserResponse
 
 	data, err := u.RepositoryFactory.UserRepository.FindByID(ctx, payload.ID)
@@ -57,7 +59,7 @@ func (u *usecase) FindByID(ctx abstraction.Context, payload dto.ByIDRequest) (dt
 	return result, nil
 }
 
-func (u *usecase) Create(ctx abstraction.Context, payload dto.CreateUserRequest) (result dto.UserResponse, err error) {
+func (u *usecase) Create(ctx context.Context, payload dto.CreateUserRequest) (result dto.UserResponse, err error) {
 	var email string
 	if payload.Email != nil {
 		email = *payload.Email
@@ -66,7 +68,7 @@ func (u *usecase) Create(ctx abstraction.Context, payload dto.CreateUserRequest)
 	}
 
 	var (
-		data *model.UserModel
+		data model.UserModel
 		user = model.UserModel{
 			UserEntity: model.UserEntity{
 				Name:     payload.Name,
@@ -77,8 +79,8 @@ func (u *usecase) Create(ctx abstraction.Context, payload dto.CreateUserRequest)
 		}
 	)
 
-	if err = trxmanager.New(u.RepositoryFactory.Db).WithTrx(ctx, func(ctx abstraction.Context) error {
-		data, err = u.RepositoryFactory.UserRepository.Create(ctx, &user)
+	if err = trxmanager.New(u.RepositoryFactory.Db).WithTrx(ctx, func(ctx context.Context) error {
+		data, err = u.RepositoryFactory.UserRepository.Create(ctx, user)
 		if err != nil {
 			return err
 		}
@@ -89,15 +91,15 @@ func (u *usecase) Create(ctx abstraction.Context, payload dto.CreateUserRequest)
 	}
 
 	result = dto.UserResponse{
-		Data: *data,
+		Data: data,
 	}
 
 	return result, nil
 }
 
-func (u *usecase) Update(ctx abstraction.Context, payload dto.UpdateUserRequest) (result dto.UserResponse, err error) {
+func (u *usecase) Update(ctx context.Context, payload dto.UpdateUserRequest) (result dto.UserResponse, err error) {
 	var (
-		data *model.UserModel
+		data model.UserModel
 		user = model.UserModel{
 			UserEntity: model.UserEntity{
 				Name:     payload.Name,
@@ -113,16 +115,17 @@ func (u *usecase) Update(ctx abstraction.Context, payload dto.UpdateUserRequest)
 		user.Password = ""
 	}
 
-	if err = trxmanager.New(u.RepositoryFactory.Db).WithTrx(ctx, func(ctx abstraction.Context) error {
-		data, err = u.RepositoryFactory.UserRepository.UpdateByID(ctx, payload.ID, &user)
+	if err = trxmanager.New(u.RepositoryFactory.Db).WithTrx(ctx, func(ctx context.Context) error {
+		data, err = u.RepositoryFactory.UserRepository.UpdateByID(ctx, payload.ID, user)
 		if err != nil {
 			return err
 		}
 
-		data, err = u.RepositoryFactory.UserRepository.FindByID(ctx, payload.ID)
+		existingData, err := u.RepositoryFactory.UserRepository.FindByID(ctx, payload.ID)
 		if err != nil {
 			return err
 		}
+		data = *existingData
 
 		return nil
 	}); err != nil {
@@ -130,16 +133,16 @@ func (u *usecase) Update(ctx abstraction.Context, payload dto.UpdateUserRequest)
 	}
 
 	result = dto.UserResponse{
-		Data: *data,
+		Data: data,
 	}
 
 	return result, nil
 }
 
-func (u *usecase) Delete(ctx abstraction.Context, payload dto.ByIDRequest) (result dto.UserResponse, err error) {
+func (u *usecase) Delete(ctx context.Context, payload dto.ByIDRequest) (result dto.UserResponse, err error) {
 	var data *model.UserModel
 
-	if err = trxmanager.New(u.RepositoryFactory.Db).WithTrx(ctx, func(ctx abstraction.Context) error {
+	if err = trxmanager.New(u.RepositoryFactory.Db).WithTrx(ctx, func(ctx context.Context) error {
 		data, err = u.RepositoryFactory.UserRepository.FindByID(ctx, payload.ID)
 		if err != nil {
 			return err

@@ -1,7 +1,8 @@
 package repository
 
 import (
-	"github.com/mcholismalik/boilerplate-golang/internal/abstraction"
+	"context"
+
 	"github.com/mcholismalik/boilerplate-golang/internal/model"
 
 	"gorm.io/gorm"
@@ -10,7 +11,7 @@ import (
 type (
 	User interface {
 		Base[model.UserModel]
-		FindByEmail(ctx abstraction.Context, email string) (*model.UserModel, error)
+		FindByEmail(ctx context.Context, email string) (*model.UserModel, error)
 	}
 
 	user struct {
@@ -26,7 +27,7 @@ func NewUser(conn *gorm.DB) User {
 	}
 }
 
-func (m *user) FindByEmail(ctx abstraction.Context, email string) (*model.UserModel, error) {
+func (m *user) FindByEmail(ctx context.Context, email string) (*model.UserModel, error) {
 	m.CheckTrx(ctx)
 	query := m.GetConn().Model(model.UserModel{})
 	result := new(model.UserModel)

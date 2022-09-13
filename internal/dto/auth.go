@@ -31,7 +31,7 @@ type (
 	}
 
 	AuthRegisterResponse struct {
-		*model.UserModel
+		model.UserModel
 	}
 	AuthRegisterResponseDoc struct {
 		Body struct {

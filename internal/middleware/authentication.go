@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"context"
 	"fmt"
 	"os"
 	"strings"
@@ -10,6 +9,7 @@ import (
 
 	"github.com/mcholismalik/boilerplate-golang/internal/abstraction"
 	"github.com/mcholismalik/boilerplate-golang/pkg/constant"
+	ctxval "github.com/mcholismalik/boilerplate-golang/pkg/ctxval"
 	res "github.com/mcholismalik/boilerplate-golang/pkg/util/response"
 
 	"github.com/golang-jwt/jwt"
@@ -65,16 +65,13 @@ func Authentication(next echo.HandlerFunc) echo.HandlerFunc {
 			email = ""
 		}
 
-		cc := &abstraction.Context{
-			Context: c.Request().Context(),
-			Auth: &abstraction.AuthContext{
-				ID:    id,
-				Name:  name,
-				Email: email,
-			},
+		authCtx := &abstraction.AuthContext{
+			ID:    id,
+			Name:  name,
+			Email: email,
 		}
-
-		newRequest := c.Request().WithContext(context.WithValue(c.Request().Context(), constant.CONTEXT_KEY, cc))
+		ctx := ctxval.SetAuthValue(c.Request().Context(), authCtx)
+		newRequest := c.Request().WithContext(ctx)
 		c.SetRequest(newRequest)
 
 		return next(c)

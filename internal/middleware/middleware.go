@@ -20,7 +20,6 @@ func Init(e *echo.Echo) {
 		NAME = fmt.Sprintf("%s-%s", APP, ENV)
 	)
 
-	e.Use(Context)
 	e.Use(
 		echoMiddleware.Recover(),
 		echoMiddleware.CORSWithConfig(echoMiddleware.CORSConfig{

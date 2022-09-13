@@ -1,6 +1,8 @@
 package user
 
 import (
+	"context"
+
 	"github.com/mcholismalik/boilerplate-golang/internal/abstraction"
 	"github.com/mcholismalik/boilerplate-golang/internal/dto"
 	"github.com/mcholismalik/boilerplate-golang/internal/factory"
@@ -43,18 +45,16 @@ func (h *handler) Route(g *echo.Group) {
 // @Failure 500 {object} res.errorResponse
 // @Router /rest/users [get]
 func (h *handler) Get(c echo.Context) error {
-	cc := c.Request().Context().Value(constant.CONTEXT_KEY).(abstraction.Context)
-
-	payload := new(abstraction.FilterParam)
-	if err := c.Bind(payload); err != nil {
+	filter := abstraction.NewFilterBuiler[model.UserEntity](c, "users")
+	if err := c.Bind(filter.Payload); err != nil {
 		return res.ErrorBuilder(&res.ErrorConstant.BadRequest, err).Send(c)
 	}
-	if err := c.Validate(payload); err != nil {
+	if err := c.Validate(filter.Payload); err != nil {
 		return res.ErrorBuilder(&res.ErrorConstant.Validation, err).Send(c)
 	}
-	abstraction.BindFilterSort(c, model.UserEntity{}, "users", payload)
+	filter.Bind()
 
-	result, pagination, err := h.Factory.Usecase.User.Find(cc, payload)
+	result, pagination, err := h.Factory.Usecase.User.Find(c.Request().Context(), *filter.Payload)
 	if err != nil {
 		return res.ErrorResponse(err).Send(c)
 	}
@@ -76,7 +76,7 @@ func (h *handler) Get(c echo.Context) error {
 // @Failure 500 {object} res.errorResponse
 // @Router /rest/users/{id} [get]
 func (h *handler) GetByID(c echo.Context) error {
-	cc := c.Request().Context().Value(constant.CONTEXT_KEY).(abstraction.Context)
+	cc := c.Request().Context().Value(constant.CONTEXT_KEY).(context.Context)
 
 	payload := new(dto.ByIDRequest)
 	if err := c.Bind(payload); err != nil {
@@ -108,7 +108,7 @@ func (h *handler) GetByID(c echo.Context) error {
 // @Failure 500 {object} res.errorResponse
 // @Router /rest/users [post]
 func (h *handler) Create(c echo.Context) error {
-	cc := c.Request().Context().Value(constant.CONTEXT_KEY).(abstraction.Context)
+	cc := c.Request().Context().Value(constant.CONTEXT_KEY).(context.Context)
 
 	payload := new(dto.CreateUserRequest)
 	if err := c.Bind(payload); err != nil {
@@ -141,7 +141,7 @@ func (h *handler) Create(c echo.Context) error {
 // @Failure 500 {object} res.errorResponse
 // @Router /rest/users/{id} [put]
 func (h *handler) Update(c echo.Context) error {
-	cc := c.Request().Context().Value(constant.CONTEXT_KEY).(abstraction.Context)
+	cc := c.Request().Context().Value(constant.CONTEXT_KEY).(context.Context)
 
 	payload := new(dto.UpdateUserRequest)
 	if err := c.Bind(&payload); err != nil {
@@ -173,7 +173,7 @@ func (h *handler) Update(c echo.Context) error {
 // @Failure 500 {object} res.errorResponse
 // @Router /rest/users/{id} [delete]
 func (h *handler) Delete(c echo.Context) error {
-	cc := c.Request().Context().Value(constant.CONTEXT_KEY).(abstraction.Context)
+	cc := c.Request().Context().Value(constant.CONTEXT_KEY).(context.Context)
 
 	payload := new(dto.ByIDRequest)
 	if err := c.Bind(payload); err != nil {

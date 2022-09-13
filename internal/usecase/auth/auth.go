@@ -1,7 +1,8 @@
 package auth
 
 import (
-	"github.com/mcholismalik/boilerplate-golang/internal/abstraction"
+	"context"
+
 	"github.com/mcholismalik/boilerplate-golang/internal/dto"
 	"github.com/mcholismalik/boilerplate-golang/internal/factory/repository"
 	"github.com/mcholismalik/boilerplate-golang/internal/model"
@@ -12,8 +13,8 @@ import (
 )
 
 type Usecase interface {
-	Login(ctx abstraction.Context, payload dto.AuthLoginRequest) (dto.AuthLoginResponse, error)
-	Register(ctx abstraction.Context, payload dto.AuthRegisterRequest) (dto.AuthRegisterResponse, error)
+	Login(ctx context.Context, payload dto.AuthLoginRequest) (dto.AuthLoginResponse, error)
+	Register(ctx context.Context, payload dto.AuthRegisterRequest) (dto.AuthRegisterResponse, error)
 }
 
 type usecase struct {
@@ -24,7 +25,7 @@ func NewUsecase(f repository.Factory) *usecase {
 	return &usecase{f}
 }
 
-func (s *usecase) Login(ctx abstraction.Context, payload dto.AuthLoginRequest) (dto.AuthLoginResponse, error) {
+func (s *usecase) Login(ctx context.Context, payload dto.AuthLoginRequest) (dto.AuthLoginResponse, error) {
 	var result dto.AuthLoginResponse
 
 	data, err := s.RepositoryFactory.UserRepository.FindByEmail(ctx, payload.Email)
@@ -49,14 +50,14 @@ func (s *usecase) Login(ctx abstraction.Context, payload dto.AuthLoginRequest) (
 	return result, nil
 }
 
-func (s *usecase) Register(ctx abstraction.Context, payload dto.AuthRegisterRequest) (dto.AuthRegisterResponse, error) {
+func (s *usecase) Register(ctx context.Context, payload dto.AuthRegisterRequest) (dto.AuthRegisterResponse, error) {
 	var result dto.AuthRegisterResponse
-	var data *model.UserModel
+	var data model.UserModel
 	var err error
 
 	data.UserEntity = payload.UserEntity
 
-	if err = trxmanager.New(s.RepositoryFactory.Db).WithTrx(ctx, func(ctx abstraction.Context) error {
+	if err = trxmanager.New(s.RepositoryFactory.Db).WithTrx(ctx, func(ctx context.Context) error {
 		data, err = s.RepositoryFactory.UserRepository.Create(ctx, data)
 		if err != nil {
 			return err

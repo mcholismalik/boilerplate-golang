@@ -1,11 +1,13 @@
 package repository
 
 import (
+	"context"
 	"fmt"
 	"math"
 	"strings"
 
 	"github.com/mcholismalik/boilerplate-golang/internal/abstraction"
+	"github.com/mcholismalik/boilerplate-golang/pkg/ctxval"
 	res "github.com/mcholismalik/boilerplate-golang/pkg/util/response"
 
 	"github.com/jackc/pgconn"
@@ -15,18 +17,18 @@ import (
 type (
 	Base[T any] interface {
 		GetConn() *gorm.DB
-		CheckTrx(ctx abstraction.Context)
+		CheckTrx(ctx context.Context)
 		MaskError(err error) error
 
-		Find(ctx abstraction.Context, filterParam *abstraction.FilterParam) ([]T, *abstraction.PaginationInfo, error)
-		FindByID(ctx abstraction.Context, id string) (*T, error)
-		Create(ctx abstraction.Context, data *T) (*T, error)
-		Creates(ctx abstraction.Context, data []T) ([]T, error)
-		UpdateByID(ctx abstraction.Context, id string, data *T) (*T, error)
-		DeleteByID(ctx abstraction.Context, id string) error
+		Find(ctx context.Context, filterParam abstraction.Filter) ([]T, *abstraction.PaginationInfo, error)
+		FindByID(ctx context.Context, id string) (*T, error)
+		Create(ctx context.Context, data T) (T, error)
+		Creates(ctx context.Context, data []T) ([]T, error)
+		UpdateByID(ctx context.Context, id string, data T) (T, error)
+		DeleteByID(ctx context.Context, id string) error
 
-		BuildFilterSort(name string, query *gorm.DB, filterParam *abstraction.FilterParam)
-		BuildPagination(ctx abstraction.Context, query *gorm.DB, pagination abstraction.Pagination) *abstraction.PaginationInfo
+		BuildFilterSort(name string, query *gorm.DB, filterParam abstraction.Filter)
+		BuildPagination(ctx context.Context, query *gorm.DB, pagination abstraction.Pagination) *abstraction.PaginationInfo
 	}
 
 	base[T any] struct {
@@ -48,14 +50,15 @@ func (m *base[T]) GetConn() *gorm.DB {
 	return m.conn
 }
 
-func (m *base[T]) CheckTrx(ctx abstraction.Context) {
-	if ctx.Trx != nil {
-		m.conn = ctx.Trx.Db
+func (m *base[T]) CheckTrx(ctx context.Context) {
+	trx := ctxval.GetTrxValue(ctx)
+	if trx != nil {
+		m.conn = trx.Db
 	}
 	m.conn = m.conn.WithContext(ctx)
 }
 
-func (m *base[T]) Find(ctx abstraction.Context, filterParam *abstraction.FilterParam) ([]T, *abstraction.PaginationInfo, error) {
+func (m *base[T]) Find(ctx context.Context, filterParam abstraction.Filter) ([]T, *abstraction.PaginationInfo, error) {
 	m.CheckTrx(ctx)
 	query := m.conn.Model(m.entity)
 
@@ -71,7 +74,7 @@ func (m *base[T]) Find(ctx abstraction.Context, filterParam *abstraction.FilterP
 	return result, info, nil
 }
 
-func (m *base[T]) FindByID(ctx abstraction.Context, id string) (*T, error) {
+func (m *base[T]) FindByID(ctx context.Context, id string) (*T, error) {
 	m.CheckTrx(ctx)
 	query := m.conn.Model(m.entity)
 	result := new(T)
@@ -82,31 +85,31 @@ func (m *base[T]) FindByID(ctx abstraction.Context, id string) (*T, error) {
 	return result, nil
 }
 
-func (m *base[T]) Create(ctx abstraction.Context, data *T) (*T, error) {
+func (m *base[T]) Create(ctx context.Context, data T) (T, error) {
 	m.CheckTrx(ctx)
 	query := m.conn.Model(m.entity)
 	err := query.Create(data).Error
 	return data, m.MaskError(err)
 }
-func (m *base[T]) Creates(ctx abstraction.Context, data []T) ([]T, error) {
+func (m *base[T]) Creates(ctx context.Context, data []T) ([]T, error) {
 	m.CheckTrx(ctx)
 	err := m.conn.Model(m.entity).Create(&data).Error
 	return data, m.MaskError(err)
 }
 
-func (m *base[T]) UpdateByID(ctx abstraction.Context, id string, data *T) (*T, error) {
+func (m *base[T]) UpdateByID(ctx context.Context, id string, data T) (T, error) {
 	m.CheckTrx(ctx)
 	err := m.conn.Model(data).Updates(data).Error
 	return data, m.MaskError(err)
 }
 
-func (m *base[T]) DeleteByID(ctx abstraction.Context, id string) error {
+func (m *base[T]) DeleteByID(ctx context.Context, id string) error {
 	m.CheckTrx(ctx)
 	err := m.conn.Model(m.entity).Where("id = ?", id).Error
 	return m.MaskError(err)
 }
 
-func (m *base[T]) BuildFilterSort(name string, query *gorm.DB, filterParam *abstraction.FilterParam) {
+func (m *base[T]) BuildFilterSort(name string, query *gorm.DB, filterParam abstraction.Filter) {
 	for _, filter := range filterParam.Query {
 		query.Where(filter.Field+" = ?", filter.Value)
 	}
@@ -127,7 +130,7 @@ func (m *base[T]) BuildFilterSort(name string, query *gorm.DB, filterParam *abst
 	}
 }
 
-func (m *base[T]) BuildPagination(ctx abstraction.Context, tx *gorm.DB, pagination abstraction.Pagination) *abstraction.PaginationInfo {
+func (m *base[T]) BuildPagination(ctx context.Context, tx *gorm.DB, pagination abstraction.Pagination) *abstraction.PaginationInfo {
 	info := &abstraction.PaginationInfo{}
 	if pagination.Page != nil {
 		limit := 10
