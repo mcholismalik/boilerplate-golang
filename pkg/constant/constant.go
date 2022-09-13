@@ -2,18 +2,20 @@ package constant
 
 // General
 const (
-	APP                  = "APP"
-	APP_NAME             = "github.com/mcholismalik/boilerplate-golang"
-	PORT                 = "PORT"
-	ENV                  = "ENV"
-	VERSION              = "VERSION"
-	HOST                 = "HOST"
-	SCHEME               = "SCHEME"
-	JWT_KEY              = "JWT_KEY"
+	APP      = "APP"
+	APP_NAME = "github.com/mcholismalik/boilerplate-golang"
+	PORT     = "PORT"
+	ENV      = "ENV"
+	VERSION  = "VERSION"
+	HOST     = "HOST"
+	SCHEME   = "SCHEME"
+	JWT_KEY  = "JWT_KEY"
+
+	CRON_ENABLED = "CRON_ENABLED"
+
+	ELASTIC_URL_1        = "ELASTIC_URL_1"
+	SENTRY_DSN           = "SENTRY_DSN"
 	FIRESTORE_PROJECT_ID = "FIRESTORE_PROJECT_ID"
-	IS_RUN_MIGRATION     = "IS_RUN_MIGRATION"
-	IS_RUN_SEEDER        = "IS_RUN_SEEDER"
-	IS_RUN_CRON          = "IS_RUN_CRON"
 )
 
 // Db
@@ -27,6 +29,9 @@ const (
 	DB_SSLMODE            = "DB_SSLMODE"
 	DB_TZ                 = "DB_TZ"
 	DB_GOBOIL_CLEAN       = "goboil_clean_db"
+
+	MIGRATION_ENABLED = "MIGRATION_ENABLED"
+	SEEDER_ENABLED    = "SEEDER_ENABLED"
 )
 
 const (

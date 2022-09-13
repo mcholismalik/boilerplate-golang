@@ -15,7 +15,7 @@ func CheckCron() {
 }
 
 func Init() {
-	if !env.NewEnv().GetBool(constant.IS_RUN_CRON) {
+	if !env.NewEnv().GetBool(constant.CRON_ENABLED) {
 		return
 	}
 

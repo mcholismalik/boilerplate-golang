@@ -65,7 +65,7 @@ func (m *UserModel) HashPassword() {
 
 func (m *UserModel) GenerateToken() (string, error) {
 	var (
-		jwtKey = os.Getenv("JWT_KEY")
+		jwtKey = os.Getenv(constant.JWT_KEY)
 	)
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{

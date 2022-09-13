@@ -21,7 +21,7 @@ var Context = ctxval.SetAuthValue(
 	})
 
 func Init() {
-	if !env.NewEnv().GetBool(constant.IS_RUN_SEEDER) {
+	if !env.NewEnv().GetBool(constant.SEEDER_ENABLED) {
 		return
 	}
 

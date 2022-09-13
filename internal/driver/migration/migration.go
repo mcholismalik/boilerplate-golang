@@ -24,7 +24,7 @@ type migration struct {
 }
 
 func Init() {
-	if !env.NewEnv().GetBool(constant.IS_RUN_MIGRATION) {
+	if !env.NewEnv().GetBool(constant.MIGRATION_ENABLED) {
 		return
 	}
 
