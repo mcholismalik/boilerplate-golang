@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/mcholismalik/boilerplate-golang/internal/model/abstraction"
+	abstraction "github.com/mcholismalik/boilerplate-golang/internal/model/base"
 	"github.com/mcholismalik/boilerplate-golang/pkg/constant"
 	"github.com/mcholismalik/boilerplate-golang/pkg/ctxval"
 	"github.com/mcholismalik/boilerplate-golang/pkg/util/date"

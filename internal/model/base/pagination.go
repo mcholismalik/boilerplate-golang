@@ -1,4 +1,4 @@
-package abstraction
+package base
 
 type Pagination struct {
 	Page  *int `query:"page" json:"page"`

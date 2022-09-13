@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/mcholismalik/boilerplate-golang/internal/factory/repository"
-	"github.com/mcholismalik/boilerplate-golang/internal/model/abstraction"
+	"github.com/mcholismalik/boilerplate-golang/internal/model/base"
 	"github.com/mcholismalik/boilerplate-golang/internal/model/dto"
 	model "github.com/mcholismalik/boilerplate-golang/internal/model/entity"
 	res "github.com/mcholismalik/boilerplate-golang/pkg/util/response"
@@ -13,7 +13,7 @@ import (
 )
 
 type Usecase interface {
-	Find(ctx context.Context, filterParam abstraction.Filter) ([]dto.UserResponse, abstraction.PaginationInfo, error)
+	Find(ctx context.Context, filterParam base.Filter) ([]dto.UserResponse, base.PaginationInfo, error)
 	FindByID(ctx context.Context, payload dto.ByIDRequest) (dto.UserResponse, error)
 	Create(ctx context.Context, payload dto.CreateUserRequest) (dto.UserResponse, error)
 	Update(ctx context.Context, payload dto.UpdateUserRequest) (dto.UserResponse, error)
@@ -28,7 +28,7 @@ func NewUsecase(f repository.Factory) *usecase {
 	return &usecase{f}
 }
 
-func (u *usecase) Find(ctx context.Context, filterParam abstraction.Filter) (result []dto.UserResponse, pagination abstraction.PaginationInfo, err error) {
+func (u *usecase) Find(ctx context.Context, filterParam base.Filter) (result []dto.UserResponse, pagination base.PaginationInfo, err error) {
 	users, info, err := u.RepositoryFactory.UserRepository.Find(ctx, filterParam)
 	if err != nil {
 		return nil, pagination, res.ErrorBuilder(&res.ErrorConstant.InternalServerError, err)

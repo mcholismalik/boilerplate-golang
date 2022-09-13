@@ -5,7 +5,7 @@ import (
 
 	"github.com/mcholismalik/boilerplate-golang/internal/delivery/middleware"
 	"github.com/mcholismalik/boilerplate-golang/internal/factory"
-	"github.com/mcholismalik/boilerplate-golang/internal/model/abstraction"
+	abstraction "github.com/mcholismalik/boilerplate-golang/internal/model/base"
 	"github.com/mcholismalik/boilerplate-golang/internal/model/dto"
 	model "github.com/mcholismalik/boilerplate-golang/internal/model/entity"
 	"github.com/mcholismalik/boilerplate-golang/pkg/constant"

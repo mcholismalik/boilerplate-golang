@@ -6,7 +6,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/mcholismalik/boilerplate-golang/internal/factory"
-	"github.com/mcholismalik/boilerplate-golang/internal/model/abstraction"
+	abstraction "github.com/mcholismalik/boilerplate-golang/internal/model/base"
 	"github.com/sirupsen/logrus"
 )
 

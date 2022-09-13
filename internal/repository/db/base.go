@@ -6,7 +6,7 @@ import (
 	"math"
 	"strings"
 
-	"github.com/mcholismalik/boilerplate-golang/internal/model/abstraction"
+	abstraction "github.com/mcholismalik/boilerplate-golang/internal/model/base"
 	"github.com/mcholismalik/boilerplate-golang/pkg/ctxval"
 	res "github.com/mcholismalik/boilerplate-golang/pkg/util/response"
 

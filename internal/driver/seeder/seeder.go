@@ -4,7 +4,7 @@ import (
 	"context"
 
 	dbDriver "github.com/mcholismalik/boilerplate-golang/internal/driver/db"
-	"github.com/mcholismalik/boilerplate-golang/internal/model/abstraction"
+	abstraction "github.com/mcholismalik/boilerplate-golang/internal/model/base"
 	"github.com/mcholismalik/boilerplate-golang/pkg/constant"
 	"github.com/mcholismalik/boilerplate-golang/pkg/ctxval"
 	"github.com/mcholismalik/boilerplate-golang/pkg/util/env"

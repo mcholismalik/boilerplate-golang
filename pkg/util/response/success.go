@@ -3,9 +3,8 @@ package response
 import (
 	"net/http"
 
-	"github.com/mcholismalik/boilerplate-golang/internal/model/abstraction"
-
 	"github.com/labstack/echo/v4"
+	"github.com/mcholismalik/boilerplate-golang/internal/model/base"
 )
 
 type successConstant struct {
@@ -40,7 +39,7 @@ func SuccessBuilder(res *Success, data interface{}) *Success {
 	return res
 }
 
-func CustomSuccessBuilder(code int, data interface{}, message string, info *abstraction.PaginationInfo) *Success {
+func CustomSuccessBuilder(code int, data interface{}, message string, info *base.PaginationInfo) *Success {
 	return &Success{
 		Response: successResponse{
 			Meta: Meta{

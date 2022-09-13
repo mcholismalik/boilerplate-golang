@@ -13,6 +13,8 @@ import (
 	"github.com/mcholismalik/boilerplate-golang/internal/factory"
 	"github.com/mcholismalik/boilerplate-golang/pkg/constant"
 
+	sentryecho "github.com/getsentry/sentry-go/echo"
+
 	"github.com/labstack/echo/v4"
 	echoSwagger "github.com/swaggo/echo-swagger"
 )
@@ -31,6 +33,9 @@ func Init(f factory.Factory) {
 
 	// middleware
 	middleware.Init(e)
+
+	// sentry
+	e.Use(sentryecho.New(sentryecho.Options{}))
 
 	// index
 	e.GET("/", func(c echo.Context) error {

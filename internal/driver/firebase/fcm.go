@@ -31,39 +31,6 @@ func FcmInit() {
 	})
 }
 
-func FcmSend(ctx context.Context, topic, title, message string) error {
-	response, err := fcmClient.Send(ctx, &messaging.Message{
-		Data: map[string]string{
-			"title": title,
-			"body":  message,
-		},
-		Webpush: &messaging.WebpushConfig{
-			Notification: &messaging.WebpushNotification{
-				Title: title,
-				Body:  message,
-			},
-		},
-		Topic: topic,
-	})
-
-	if err != nil {
-		log.Println(err)
-		return err
-	}
-
-	log.Println("success fcm send", response)
-
-	return nil
-}
-
-func FcmSubscribeToTopic(ctx context.Context, topic string, tokens []string) error {
-	response, err := fcmClient.SubscribeToTopic(ctx, tokens, topic)
-	if err != nil {
-		log.Println("error subscribe to topic", err)
-		return err
-	}
-
-	log.Println("success fcm subscribe tot topic", response)
-
-	return nil
+func GetFcmClient() *messaging.Client {
+	return fcmClient
 }

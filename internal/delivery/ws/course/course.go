@@ -4,8 +4,9 @@ import (
 	"log"
 
 	"github.com/gorilla/websocket"
+
 	"github.com/mcholismalik/boilerplate-golang/internal/factory"
-	"github.com/mcholismalik/boilerplate-golang/internal/model/abstraction"
+	"github.com/mcholismalik/boilerplate-golang/internal/model/base"
 	xws "github.com/mcholismalik/boilerplate-golang/pkg/ws"
 	"github.com/sirupsen/logrus"
 
@@ -36,7 +37,7 @@ func (h *delivery) Course(c echo.Context) error {
 	}
 	defer ws.Close()
 
-	ch := abstraction.NewWsChannel(ws)
+	ch := base.NewWsChannel(ws)
 	err = xws.HubAssignor(c, ch, h.Factory)
 	if err != nil {
 		return err
@@ -51,14 +52,14 @@ func (h *delivery) Course(c echo.Context) error {
 	return nil
 }
 
-func ProcessCourse(ch *abstraction.WsChannel) {
+func ProcessCourse(ch *base.WsChannel) {
 	for {
 		select {
 		case v := <-ch.MsgReceive:
 			// if we wanna mask something
 			// msg := []byte("drawName('malik')")
 
-			ch.MsgSend <- abstraction.WsMsg{
+			ch.MsgSend <- base.WsMsg{
 				MsgType: v.MsgType,
 				Msg:     v.Msg,
 			}

@@ -7,7 +7,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/mcholismalik/boilerplate-golang/internal/model/abstraction"
+	baseModel "github.com/mcholismalik/boilerplate-golang/internal/model/base"
 	"github.com/mcholismalik/boilerplate-golang/pkg/constant"
 	ctxval "github.com/mcholismalik/boilerplate-golang/pkg/ctxval"
 	res "github.com/mcholismalik/boilerplate-golang/pkg/util/response"
@@ -65,7 +65,7 @@ func Authentication(next echo.HandlerFunc) echo.HandlerFunc {
 			email = ""
 		}
 
-		authCtx := &abstraction.AuthContext{
+		authCtx := &baseModel.AuthContext{
 			ID:    id,
 			Name:  name,
 			Email: email,
